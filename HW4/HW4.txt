@@ -1,0 +1,270 @@
+Query 1 is in 2 commands and Query 2-4 are in 1 command each
+
+
+########creating a graph#######
+
+Query 1:
+
+Part 1:
+courses=TinkerGraph.open().traversal()
+
+Output:
+==>graphtraversalsource[tinkergraph[vertices:0 edges:0], standard]
+
+Part 2:
+courses.addV("course").property(id,"CS101").as("CS101").
+addV("course").property(id,"CS201").as("CS201").
+addV("course").property(id,"CS220").as("CS220").
+addV("course").property(id,"CS334").as("CS334").
+addV("course").property(id,"CS420").as("CS420").
+addV("course").property(id,"CS681").as("CS681").
+addV("course").property(id,"CS400").as("CS400").
+addV("course").property(id,"CS526").as("CS526").
+addE("requires pre-req").property(id,1).property("weight",1).from("CS201").to("CS101").
+addE("requires pre-req").property(id,2).property("weight",1).from("CS220").to("CS201").
+addE("requires pre-req").property(id,3).property("weight",1).from("CS334").to("CS201").
+addE("requires pre-req").property(id,4).property("weight",1).from("CS420").to("CS220").
+addE("requires pre-req").property(id,5).property("weight",1).from("CS681").to("CS334").
+addE("requires pre-req").property(id,6).property("weight",1).from("CS400").to("CS334").
+addE("requires pre-req").property(id,7).property("weight",1).from("CS526").to("CS400").
+addE("is a co-req of").property(id,8).property("weight",2).from("CS420").to("CS220").
+addE("is a co-req of").property(id,9).property("weight",2).from("CS526").to("CS400").iterate()
+
+Output:
+gremlin> courses
+==>graphtraversalsource[tinkergraph[vertices:8 edges:9], standard]
+gremlin> courses.V()
+==>v[CS334]
+==>v[CS400]
+==>v[CS101]
+==>v[CS420]
+==>v[CS201]
+==>v[CS220]
+==>v[CS681]
+==>v[CS526]
+gremlin> courses.E()
+==>e[1][CS201-requires pre-req->CS101]
+==>e[2][CS220-requires pre-req->CS201]
+==>e[3][CS334-requires pre-req->CS201]
+==>e[4][CS420-requires pre-req->CS220]
+==>e[5][CS681-requires pre-req->CS334]
+==>e[6][CS400-requires pre-req->CS334]
+==>e[7][CS526-requires pre-req->CS400]
+==>e[8][CS420-is a co-req of->CS220]
+==>e[9][CS526-is a co-req of->CS400]
+
+Explanation:
+1.Part 1 creates a TraversalSource instance for the Graph instance, TinkerGraph (ie, the API to the structure of the graph) created, by chaining the function open() and traversal().
+2.Added the vertices/nodes of type "course" of the graph provided using the addV() function. The node is added with its name as the ID and alias, for adding the edges later.
+3.The edge "requires pre-req" connects the course which has pre-req to the pre-req course. The property, weight with a value 1 is added is here to show that a course can be taken only if its pre-req is met.
+4.The edge "is a co-req of" connects courses which are co-reqs. The property, weight on these edges is 2.  
+
+
+#######return doubly connected nodes########
+
+Query 2:
+
+(Approach 1)
+courses.V().as('a').outE().has('weight',2).inV().as('b').select('a','b')
+
+Output:
+==>[a:v[CS420],b:v[CS220]]
+==>[a:v[CS526],b:v[CS400]]
+
+Explanation:
+1.courses.V().as('a') - all the vertices in the traversal courses represented as 'a'
+==>v[CS334]
+==>v[CS400]
+==>v[CS101]
+==>v[CS420]
+==>v[CS201]
+==>v[CS220]
+==>v[CS681]
+==>v[CS526]
+2.courses.V().as('a').outE() - all the edges coming out of these vertices.
+==>e[3][CS334-requires pre-req->CS201]
+==>e[6][CS400-requires pre-req->CS334]
+==>e[4][CS420-requires pre-req->CS220]
+==>e[8][CS420-is a co-req of->CS220]
+==>e[1][CS201-requires pre-req->CS101]
+==>e[2][CS220-requires pre-req->CS201]
+==>e[5][CS681-requires pre-req->CS334]
+==>e[7][CS526-requires pre-req->CS400]
+==>e[9][CS526-is a co-req of->CS400]
+3.courses.V().as('a').outE().has('weight',2) - filtering edges with weight 2.
+==>e[8][CS420-is a co-req of->CS220]
+==>e[9][CS526-is a co-req of->CS400]
+4.courses.V().as('a').outE().has('weight',2).inV().as('b') - returns all vertices with the edges coming in as 'b'.
+==>v[CS220]
+==>v[CS400]
+5.courses.V().as('a').outE().has('weight',2).inV().as('b').select('a','b') - returns both the vertices for the selected edges.
+==>[a:v[CS420],b:v[CS220]]
+==>[a:v[CS526],b:v[CS400]]
+
+--------------------------------------------------------------------------
+(Approach 2)
+courses.V().as('a').outE('is a co-req of').inV().as('b').select('a','b')
+
+Output:
+==>[a:v[CS420],b:v[CS220]]
+==>[a:v[CS526],b:v[CS400]]
+
+Explanation:
+1.courses.V().as('a') - all the vertices in the traversal courses represented as 'a'
+==>v[CS334]
+==>v[CS400]
+==>v[CS101]
+==>v[CS420]
+==>v[CS201]
+==>v[CS220]
+==>v[CS681]
+==>v[CS526]
+2.courses.V().as('a').outE('is a co-req of') - all the edges coming out of these vertices with ID 'is a co-req of' .
+==>e[8][CS420-is a co-req of->CS220]
+==>e[9][CS526-is a co-req of->CS400]
+3.courses.V().as('a').outE('is a co-req of').inV().as('b')- returns all vertices with the edges coming in as 'b' with the selected ID.
+==>v[CS220]
+==>v[CS400]
+4.courses.V().as('a').outE().has('weight',2).inV().as('b').select('a','b') - returns both the vertices for the selected edges.
+==>[a:v[CS420],b:v[CS220]]
+==>[a:v[CS526],b:v[CS400]]
+
+--------------------------------------------------------------------------------
+(Approach 3)
+courses.V().as('a').outE().inV().as('b').select('a','b').groupCount().unfold().filter(select(values).is(eq(2))).select(keys)
+
+Output:
+==>[a:v[CS526],b:v[CS400]]
+==>[a:v[CS420],b:v[CS220]]
+
+Explanation:
+1.courses.V().as('a') - all the vertices in the traversal courses represented as 'a'
+==>v[CS334]
+==>v[CS400]
+==>v[CS101]
+==>v[CS420]
+==>v[CS201]
+==>v[CS220]
+==>v[CS681]
+==>v[CS526]
+2.courses.V().as('a').outE() - all the edges coming out of the vertices
+==>e[3][CS334-requires pre-req->CS201]
+==>e[6][CS400-requires pre-req->CS334]
+==>e[4][CS420-requires pre-req->CS220]
+==>e[8][CS420-is a co-req of->CS220]
+==>e[1][CS201-requires pre-req->CS101]
+==>e[2][CS220-requires pre-req->CS201]
+==>e[5][CS681-requires pre-req->CS334]
+==>e[7][CS526-requires pre-req->CS400]
+==>e[9][CS526-is a co-req of->CS400]
+3. courses.V().as('a').outE().inV().as('b') - returns vertices which have the chosen edges coming inward
+==>v[CS201]
+==>v[CS334]
+==>v[CS220]
+==>v[CS220]
+==>v[CS101]
+==>v[CS201]
+==>v[CS334]
+==>v[CS400]
+==>v[CS400]
+4.courses.V().as('a').outE().inV().as('b').select('a','b') - returns both the source and target nodes of the edges
+==>[a:v[CS334],b:v[CS201]]
+==>[a:v[CS400],b:v[CS334]]
+==>[a:v[CS420],b:v[CS220]]
+==>[a:v[CS420],b:v[CS220]]
+==>[a:v[CS201],b:v[CS101]]
+==>[a:v[CS220],b:v[CS201]]
+==>[a:v[CS681],b:v[CS334]]
+==>[a:v[CS526],b:v[CS400]]
+==>[a:v[CS526],b:v[CS400]]
+5.courses.V().as('a').outE().inV().as('b').select('a','b').groupCount() - returns the count of each of the unique pair of vertices
+==>[[a:v[CS526],b:v[CS400]]:2,[a:v[CS400],b:v[CS334]]:1,[a:v[CS420],b:v[CS220]]:2,[a:v[CS681],b:v[CS334]]:1,[a:v[CS334],b:v[CS201]]:1,[a:v[CS201],b:v[CS101]]:1,[a:v[CS220],b:v[CS201]]:1]
+6.courses.V().as('a').outE().inV().as('b').select('a','b').groupCount().unfold() - converts each (a,b) pair with the count into linear form
+==>{a=v[CS526], b=v[CS400]}=2
+==>{a=v[CS400], b=v[CS334]}=1
+==>{a=v[CS420], b=v[CS220]}=2
+==>{a=v[CS681], b=v[CS334]}=1
+==>{a=v[CS334], b=v[CS201]}=1
+==>{a=v[CS201], b=v[CS101]}=1
+==>{a=v[CS220], b=v[CS201]}=1
+7.courses.V().as('a').outE().inV().as('b').select('a','b').groupCount().unfold().filter(select(values).is(eq(2))) - filters sets with a count equal to 2
+==>{a=v[CS526], b=v[CS400]}=2
+==>{a=v[CS420], b=v[CS220]}=2
+8.courses.V().as('a').outE().inV().as('b').select('a','b').groupCount().unfold().filter(select(values).is(eq(2))).select(keys) - returns the keys of the filtered sets
+==>[a:v[CS526],b:v[CS400]]
+==>[a:v[CS420],b:v[CS220]]
+
+#######ancestors of a vertex#######
+
+Query 3:
+
+courses.V('CS526').repeat(out().dedup()).emit()
+
+Output:
+==>v[CS400]
+==>v[CS334]
+==>v[CS201]
+==>v[CS101]
+
+Explanation:
+1.courses.V('CS526') - return vertex with the ID
+==>v[CS526]
+2.courses.V('CS526').out() - returns the nodes with edges coming into CS526 
+==>v[CS400]
+==>v[CS400]
+3.courses.V('CS526').out().dedup() - removes the duplicates from the list of nodes returned
+==>v[CS400]
+4.courses.V('CS526').repeat(out().dedup()).emit() - repeats the above steps until there are no edges. emit() after the repeat statement returns nodes excluding CS526.
+
+#######max depth#######
+
+Query 4:
+
+courses.V('CS101').repeat(__.in()).emit().path().count(local).max()
+Explanation:
+1.courses.V('CS101') - returns vertex with the ID
+==>v[CS101]
+2.courses.V('CS101').in() - returns the node which has an outgoing edge to CS101
+==>v[CS201]
+3.courses.V('CS101').repeat(__.in()).emit() - returns all the nodes which have CS101 as one of the pre-reqs
+==>v[CS201]
+==>v[CS220]
+==>v[CS334]
+==>v[CS420]
+==>v[CS420]
+==>v[CS681]
+==>v[CS400]
+==>v[CS526]
+==>v[CS526]
+4.courses.V('CS101').repeat(__.in()).emit().path() - returns all the paths to the nodes
+==>[v[CS101],v[CS201]]
+==>[v[CS101],v[CS201],v[CS220]]
+==>[v[CS101],v[CS201],v[CS334]]
+==>[v[CS101],v[CS201],v[CS220],v[CS420]]
+==>[v[CS101],v[CS201],v[CS220],v[CS420]]
+==>[v[CS101],v[CS201],v[CS334],v[CS681]]
+==>[v[CS101],v[CS201],v[CS334],v[CS400]]
+==>[v[CS101],v[CS201],v[CS334],v[CS400],v[CS526]]
+==>[v[CS101],v[CS201],v[CS334],v[CS400],v[CS526]]
+5.courses.V('CS101').repeat(__.in()).emit().path().count() - returns the number of paths
+==>9
+6.courses.V('CS101').repeat(__.in()).emit().path().count(local) - returns the count for each path
+==>2
+==>3
+==>3
+==>4
+==>4
+==>4
+==>4
+==>5
+==>5
+7.courses.V('CS101').repeat(__.in()).emit().path().count(local).max() - returns the maximum of the path counts
+==>5
+
+
+Output:
+==>5
+
+
+
+

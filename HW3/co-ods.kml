@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<kml xmlns="http://earth.google.com/kml/2.0">
+		<Document>
+			<Style id="z1">
+				<IconStyle><Icon><href>http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png</href></Icon></IconStyle>
+			</Style>
+			<Placemark><name>Home</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2831979,34.0297783</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Leavey Library</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2828846,34.0216306</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Expo/Vermont</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2916268,34.01824855</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Target</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2844037,34.02569882</coordinates></Point>
+			</Placemark>
+			<Placemark><name>West 29th street</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2931817,34.0287511</coordinates></Point>
+			</Placemark>
+			<Placemark><name>USC Bookstores</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2865447,34.02061586</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Doheny Library</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2836587,34.02013715</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Bovard Auditorium</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2852948,34.02112125</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Taper Hall</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2844504,34.02191807</coordinates></Point>
+			</Placemark>
+			<Placemark><name>SGM</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2891429,34.02119179</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Cinematic Arts</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.2876224,34.02379978</coordinates></Point>
+			</Placemark>
+			<Placemark><name>Viterbi</name>
+				<styleUrl>#z1</styleUrl><Point><coordinates>-118.289687,34.02379978</coordinates></Point>
+			</Placemark>
+			<Style id="transGreenPoly">       
+				<LineStyle>         <width>1.5</width>       </LineStyle>
+				<PolyStyle>         <color>5014F0F0</color>       </PolyStyle>     
+			</Style>     
+			<Style id="transYellowPoly">       <LineStyle>         <width>1.5</width>       </LineStyle>       <PolyStyle>         <color>5014F0F0</color>       </PolyStyle>     </Style>     <Placemark>       <styleUrl>#transYellowPoly</styleUrl>       <Polygon>         <extrude>1</extrude>         <altitudeMode>relativeToGround</altitudeMode>         <outerBoundaryIs>           <LinearRing>             <coordinates> -118.29163,34.0182486,20
+-118.28366,34.0201372,20
+-118.28288,34.0216306,20
+-118.2832,34.0297783,20
+-118.29318,34.0287511,20
+-118.29163,34.0182486,20
+</coordinates>           </LinearRing>         </outerBoundaryIs>       </Polygon>     </Placemark> 
+		</Document>
+	</kml>

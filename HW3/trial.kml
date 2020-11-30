@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?> <kml xmlns="http://www.opengis.net/kml/2.2">   <Document>     <Style id="transYellowPoly">       <LineStyle>         <width>1.5</width>       </LineStyle>       <PolyStyle>         <color>5014F0F0</color>       </PolyStyle>     </Style>     <Placemark>       <styleUrl>#transYellowPoly</styleUrl>       <Polygon>         <extrude>1</extrude>         <altitudeMode>relativeToGround</altitudeMode>         <outerBoundaryIs>           <LinearRing>             <coordinates> -118.29163,34.0182486,20
+-118.28366,34.0201372,20
+-118.28288,34.0216306,20
+-118.2832,34.0297783,20
+-118.29318,34.0287511,20
+-118.29163,34.0182486,20
+</coordinates>           </LinearRing>         </outerBoundaryIs>       </Polygon>     </Placemark>   </Document> </kml> 
+ 
